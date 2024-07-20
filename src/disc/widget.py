@@ -3,6 +3,7 @@ import subprocess
 import psutil
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtWidgets import QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
+from psutil._common import bytes2human
 
 
 class AllDiscInfo(QtWidgets.QTableWidget):
@@ -88,10 +89,10 @@ class AllDiscTable(QWidget):
         column_position = 0
         drives = self.__get_all_disc_path()
         for drive in drives:
-            drive_free_space_full = shutil.disk_usage(drive).free
-            drive_free_space_gb = ('%.3f' % (float(drive_free_space_full) / self.bytes_per_gb))
+            drive_free_space_full = shutil.disk_usage(drive)
+            free_space = bytes2human(drive_free_space_full.free)
             self.tableWidget.setItem(1, column_position,
-                                     QTableWidgetItem(f"{drive_free_space_gb} ГБ"))
+                                     QTableWidgetItem(f"{free_space}"))
             column_position += 1
 
     def __get_usage_disc_space(self) -> None:
@@ -99,10 +100,10 @@ class AllDiscTable(QWidget):
         column_position = 0
         drives = self.__get_all_disc_path()
         for drive in drives:
-            drive_usage_space_full = shutil.disk_usage(drive).used
-            drive_usage_space_gb = ('%.3f' % (float(drive_usage_space_full / self.bytes_per_gb)))
+            drive_free_space_full = shutil.disk_usage(drive)
+            full_space = bytes2human(drive_free_space_full.used)
             self.tableWidget.setItem(2, column_position,
-                                     QTableWidgetItem(f"{drive_usage_space_gb} ГБ"))
+                                     QTableWidgetItem(f"{full_space}"))
             column_position += 1
 
     def __get_total_disc_space(self) -> None:
@@ -110,10 +111,10 @@ class AllDiscTable(QWidget):
         column_position = 0
         drives = self.__get_all_disc_path()
         for drive in drives:
-            drive_total_space_full = shutil.disk_usage(drive).total
-            drive_total_space_gb = ("%.3f" % (float(drive_total_space_full / self.bytes_per_gb)))
+            drive_total_space_full = shutil.disk_usage(drive)
+            total_space = bytes2human(drive_total_space_full.total)
             self.tableWidget.setItem(3, column_position,
-                                     QTableWidgetItem(f"{drive_total_space_gb} ГБ"))
+                                     QTableWidgetItem(f"{total_space}"))
             column_position += 1
 
 
