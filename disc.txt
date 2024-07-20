@@ -1,0 +1,13 @@
+['/dev/sda -d ata # /dev/sda,
+ ATA device',
+  '/dev/sdb -d nvme # /dev/sdb,
+   NVMe device',
+    '/dev/sdc -d nvme # /dev/sdc,
+     NVMe device',
+      '']
+
+
+['/dev/sda -d ata # /dev/sda',
+ ' ATA device\n/dev/sdb -d nvme # /dev/sdb',
+  ' NVMe device\n/dev/sdc -d nvme # /dev/sdc',
+   ' NVMe device\n']
