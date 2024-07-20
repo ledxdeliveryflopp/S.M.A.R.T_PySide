@@ -128,7 +128,7 @@ class DiscStatistic(QWidget):
         self.setLayout(self.layout)
         self.construct_table()
         self.get_all_disc_path()
-        # self.get_disc_read_count()
+        self.get_disc_read_count()
 
     def construct_table(self) -> None:
         """Создание колонок и строк"""
@@ -143,9 +143,9 @@ class DiscStatistic(QWidget):
             self.drive_code.append(drive)
         self.drive_code.remove("")
         self.tableWidget.setColumnCount(len(self.drive_code))
-        self.tableWidget.setVerticalHeaderLabels(["Название", "test1", "test2"])
+        self.tableWidget.setVerticalHeaderLabels(["Название", "Колличество циклов чтения", "test2"])
 
-    def get_all_disc_path(self) -> list:
+    def get_all_disc_path(self) -> None:
         """Все диски"""
         column_position = 0
         for drive in self.drive_code:
@@ -165,16 +165,17 @@ class DiscStatistic(QWidget):
         """Количество циклов чтения"""
         column_position = 0
         for drive in self.drive_code:
-            smart_command = subprocess.run(["smartctl", "-i", f"{drive}"], capture_output=True,
-                                           text=True)
+            smart_command = subprocess.run(["smartctl", "-a", f"{drive}"], capture_output=True, text=True)
             result = smart_command.stdout
             data = result.split("\n")
-            data = data[4:]
-            if "=== START OF INFORMATION SECTION ===" in data:
-                data = data[1:]
-            data = data[0].split(":")
-            disc_name = data[1].replace(" ", "")
-            self.tableWidget.setItem(0, column_position, QTableWidgetItem(f"{disc_name}"))
+            for item in data:
+                if "Data Units Read:" in item:
+                    read_count = item.replace("Data Units Read:", "")
+                    read_count = read_count.replace(" ", "")
+                    self.tableWidget.setItem(1, column_position, QTableWidgetItem(f"{read_count}"))
+                    if self.tableWidget.item(1, column_position - 1) is None:
+                        self.tableWidget.setItem(1, column_position - 1, QTableWidgetItem(f"Не "
+                                                                                          f"возможно подсчитать"))
             column_position += 1
 
 
